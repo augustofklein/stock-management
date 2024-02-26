@@ -1,5 +1,9 @@
+import Layout from "@/components/template/Layout";
+
 export default function Home() {
   return(
-    <div></div>
+    <Layout title="Página Inicial" subtitle="Teste de subtitle">
+      <h3>Página de teste de layout</h3>
+    </Layout>
   )
 }
