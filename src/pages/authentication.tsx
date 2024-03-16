@@ -3,7 +3,7 @@ import { WarningIcon } from "@/components/icons";
 import useAuth from "@/data/hook/useAuth";
 import { useState } from "react";
 
-export default function Autentication() {
+export default function Authentication() {
 
     const { cadastrar, login, loginGoogle } = useAuth()
 

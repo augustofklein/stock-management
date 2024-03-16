@@ -3,18 +3,21 @@ import loading from '../../../public/images/loading.gif'
 import useAuth from '@/data/hook/useAuth'
 import router from 'next/router'
 import Head from 'next/head'
+import { useEffect } from 'react'
 
 interface ForceAuthenticationProps {
     children?:any
 }
 
-export default function ForcarAutenticacao(props: ForceAuthenticationProps) {
+export default function ForceAuthentication(props: ForceAuthenticationProps) {
 
     const { carregando, user } = useAuth()
 
-    type RenderizarConteudoProps = {
-        children?: any
-      };
+    useEffect(() => {
+        if (!carregando && !user?.email) {
+            router.push('/authentication');
+        }
+    }, [carregando, user, router]);
 
     function renderizarConteudo() {
         return(
@@ -43,15 +46,6 @@ export default function ForcarAutenticacao(props: ForceAuthenticationProps) {
                 <Image src={loading} alt=""/>
             </div>
         )
-    }
-
-    if(!carregando && user?.email) {
-        return renderizarConteudo()
-    } else if (carregando) {
-        return renderizarCarregando()
-    } else {
-        router.push('/autentication')
-        return null
     }
 
 }
