@@ -104,5 +104,4 @@ export default function Authentication() {
             </div>
         </div>
     )
-
 }
