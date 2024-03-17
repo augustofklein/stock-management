@@ -6,7 +6,7 @@ import Cookies from 'js-cookie'
 
 interface AuthContextProps {
     user?: User
-    carregando?: boolean
+    loadingAuth?: boolean
     cadastrar?: (email: string, senha: string) => Promise<void>
     login?: (email: string, senha: string) => Promise<void>
     loginGoogle?: () => Promise<void>
@@ -39,7 +39,7 @@ function gerenciarCookie(logado: boolean) {
 
 export function AuthProvider(props: any) {
 
-    const [carregando, setCarregando] = useState(true)
+    const [loadingAuth, setLoadingAuth] = useState(true)
     const [user, setUser] = useState<User>()
 
     async function configurarSessao(usuarioFirebase: any) {
@@ -47,32 +47,32 @@ export function AuthProvider(props: any) {
             const usuario = await usuarioNormalizado(usuarioFirebase)
             setUser(user)
             gerenciarCookie(true)
-            setCarregando(false)
+            setLoadingAuth(false)
             return usuario.email
         } else {
             setUser(undefined)
             gerenciarCookie(false)
-            setCarregando(false)
+            setLoadingAuth(false)
             return false
         }
     }
 
     async function login(email: string, senha: string) {
         try {
-            setCarregando(true)
+            setLoadingAuth(true)
             const resp = await firebase.auth()
                 .signInWithEmailAndPassword(email, senha)
 
             await configurarSessao(resp.user)
             route.push('/')
         } finally {
-            setCarregando(false)
+            setLoadingAuth(false)
         }
     }
 
     async function loginGoogle() {
         try {
-            setCarregando(true)
+            setLoadingAuth(true)
             const resp = await firebase.auth().signInWithPopup(
                 new firebase.auth.GoogleAuthProvider()
             )
@@ -80,30 +80,30 @@ export function AuthProvider(props: any) {
             await configurarSessao(resp.user)
             route.push('/')
         } finally {
-            setCarregando(false)
+            setLoadingAuth(false)
         }
     }
 
     async function cadastrar(email: string, senha: string) {
         try {
-            setCarregando(true)
+            setLoadingAuth(true)
             const resp = await firebase.auth()
                 .createUserWithEmailAndPassword(email, senha)
 
             await configurarSessao(resp.user)
             route.push('/')
         } finally {
-            setCarregando(false)
+            setLoadingAuth(false)
         }
     }
 
     async function logout() {
         try {
-            setCarregando(true)
+            setLoadingAuth(true)
             await firebase.auth().signOut()
             await configurarSessao(null)
         } finally {
-            setCarregando(false)
+            setLoadingAuth(false)
         }
     }
 
@@ -113,14 +113,14 @@ export function AuthProvider(props: any) {
             const cancelar = firebase.auth().onIdTokenChanged(configurarSessao)
             return () => cancelar()
         } else {
-            setCarregando(false)
+            setLoadingAuth(false)
         }
     }, [])
 
     return(
         <AuthContext.Provider value={{
             user,
-            carregando,
+            loadingAuth,
             cadastrar,
             login,
             loginGoogle,

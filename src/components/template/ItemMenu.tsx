@@ -10,7 +10,7 @@ interface ItemMenuProps {
 
 export default function ItemMenu(props: ItemMenuProps) {
 
-    function renderizarLink() {
+    function renderLink() {
 
         return(
             <a className={`
@@ -36,10 +36,10 @@ export default function ItemMenu(props: ItemMenuProps) {
         `}>
             {props.url ? (
                 <Link legacyBehavior href={props.url}>
-                    {renderizarLink()}
+                    {renderLink()}
                 </Link>
             ) : (
-                renderizarLink()
+                renderLink()
             )}
         </li>
     )
