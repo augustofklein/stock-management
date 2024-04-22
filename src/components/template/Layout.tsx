@@ -2,7 +2,6 @@ import LateralMenu from "./LateralMenu"
 import PageHeader from "./PageHeader"
 import Content from './Content'
 import useAppData from "@/data/hook/useAppData"
-import ForceAuthentication from "../auth/ForceAuthentication"
 
 interface LayoutProps {
     title: string
@@ -15,7 +14,6 @@ export default function Layout(props: LayoutProps) {
     const { tema } = useAppData()
 
     return(
-        <ForceAuthentication>
             <div className={`${tema} flex h-screen w-screen`}>
                 <LateralMenu />
                 <div className={`
@@ -28,6 +26,5 @@ export default function Layout(props: LayoutProps) {
                     </Content>
                 </div>
             </div>
-        </ForceAuthentication>
     )
 }
