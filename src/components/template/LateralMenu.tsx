@@ -1,4 +1,4 @@
-import { SettingsIcon, HomeIcon, BellIcon, ExitIcon } from "../icons";
+import { SettingsIcon, HomeIcon, BellIcon, ExitIcon, ProductIcon } from "../icons";
 import Logo from "./Logo";
 import ItemMenu from "./ItemMenu";
 
@@ -18,9 +18,8 @@ export default function LateralMenu() {
                 <Logo/>
             </div>
             <ul className="flex-grow">
-                <ItemMenu url="/" text="Início" icon={HomeIcon}/>
-                <ItemMenu url="/ajustes" text="Ajustes" icon={SettingsIcon}/>
-                <ItemMenu url="/notificacoes" text="Notificações" icon={BellIcon}/>
+                <ItemMenu url="/" text="Home" icon={HomeIcon}/>
+                <ItemMenu url="/products" text="Products" icon={ProductIcon}/>
             </ul>
             <ul>
             </ul>
