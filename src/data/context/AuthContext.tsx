@@ -29,11 +29,11 @@ async function normalizeUser(usuarioFirebase: firebase.User): Promise<Usuario> {
 
 function gerenciarCookie(logado: boolean) {
     if(logado) {
-        Cookies.set('admin-template-auth', '',{
+        Cookies.set('stock-management-auth', 'true',{
             expires: 7
         })
     } else {
-        Cookies.remove('admin-template-auth')
+        Cookies.remove('stock-management-auth')
     }
 }
 
@@ -82,7 +82,7 @@ export function AuthProvider(props: any) {
     }
 
     useEffect(() => {
-        if(Cookies.get('admin-template-auth')) {
+        if(Cookies.get('stock-management-auth')) {
             const cancelar = firebase.auth().onIdTokenChanged(configSession)
             return () => cancelar()
         } else {
