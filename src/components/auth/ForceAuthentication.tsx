@@ -23,7 +23,7 @@ export default function ForceAuthentication(props: ForceAuthenticationProps) {
                     <script
                         dangerouslySetInnerHTML={{
                             __html: `
-                                if(!document.cookie?.includes("stock-management")) {
+                                if(!document.cookie?.includes("stock-management-auth")) {
                                     window.location.href = "/authentication"
                                 }  
                             `
