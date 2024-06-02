@@ -34,6 +34,12 @@ export default function Products() {
     return (
         <Layout title="Products" subtitle="Aqui você irá gerenciar os seus produtos!">
             <div>
+                <button className={`
+                    bg-blue-500 hover:bg-blue-400
+                    text-white rounded-lg px-4 py-3
+                `}>
+                    Add Product
+                </button>
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                     {products ? (
                         products.map(product => (
