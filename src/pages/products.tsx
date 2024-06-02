@@ -1,5 +1,6 @@
 import Layout from "@/components/template/Layout";
 import ProductCard from "@/components/template/ProductCard";
+import ProductModal from "@/components/template/ProductModal";
 import Product from "@/model/Product";
 import { useEffect, useState } from "react";
 
@@ -7,6 +8,15 @@ export default function Products() {
 
     const [products, setProducts] = useState<Product[]>();
     const [error, setError] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+    
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -37,7 +47,7 @@ export default function Products() {
                 <button className={`
                     bg-blue-500 hover:bg-blue-400
                     text-white rounded-lg px-4 py-3
-                `}>
+                `} onClick={openModal}>
                     Add Product
                 </button>
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -49,6 +59,7 @@ export default function Products() {
                         <p>No products available</p>
                     )}
                 </div>
+                <ProductModal openModal={isModalOpen} closeModal={closeModal}/>
             </div>
         </Layout>
     )
