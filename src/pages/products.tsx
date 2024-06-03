@@ -37,8 +37,31 @@ export default function Products() {
         fetchProducts();
     }, [])
 
-    const reloadProducts = async () => {
+    const handleReloadProducts = async () => {
         await fetchProducts();
+    };
+
+    const handleEdit = () => {
+        // Handle edit functionality, such as opening a modal with the product details
+    };
+    
+    const handleDelete = async (productId: string) => {
+        try {
+            const response = await fetch(`https://stock-management-backend-ten.vercel.app/products/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+    
+            if (!response.ok) {
+                console.error('Failed to delete product');
+            } else {
+                handleReloadProducts();
+            }
+        } catch (error) {
+            console.error('An error occurred while deleting the product:', error);
+        }
     };
 
     if (error) {
@@ -57,13 +80,13 @@ export default function Products() {
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                     {products ? (
                         products.map(product => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} handleDelete={handleDelete} handleEdit={handleEdit} />
                         ))
                     ) : (
                         <p>No products available</p>
                     )}
                 </div>
-                <ProductModal openModal={isModalOpen} closeModal={closeModal} handleSubmit={reloadProducts}/>
+                <ProductModal openModal={isModalOpen} closeModal={closeModal} handleSubmit={handleReloadProducts}/>
             </div>
         </Layout>
     )

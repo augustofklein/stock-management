@@ -21,7 +21,6 @@ export default function ProductModal(props: ProductModalProps) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
         
         const response = await fetch('https://stock-management-backend-ten.vercel.app/products', {
             method: 'POST',
