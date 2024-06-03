@@ -18,24 +18,28 @@ export default function Products() {
         setIsModalOpen(false);
     };
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await fetch('https://stock-management-backend-ten.vercel.app/products');
-            
-                if(!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-
-                const data: Product[] = await response.json();
-                setProducts(data);
-            } catch (error: any) {
-                setError(error.message);
+    const fetchProducts = async () => {
+        try {
+            const response = await fetch('https://stock-management-backend-ten.vercel.app/products');
+        
+            if(!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
             }
-        }
 
+            const data: Product[] = await response.json();
+            setProducts(data);
+        } catch (error: any) {
+            setError(error.message);
+        }
+    }
+
+    useEffect(() => {
         fetchProducts();
     }, [])
+
+    const reloadProducts = async () => {
+        await fetchProducts();
+    };
 
     if (error) {
         return <div>Error: {error}</div>;
@@ -59,7 +63,7 @@ export default function Products() {
                         <p>No products available</p>
                     )}
                 </div>
-                <ProductModal openModal={isModalOpen} closeModal={closeModal}/>
+                <ProductModal openModal={isModalOpen} closeModal={closeModal} handleSubmit={reloadProducts}/>
             </div>
         </Layout>
     )
