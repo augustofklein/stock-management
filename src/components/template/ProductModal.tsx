@@ -22,7 +22,7 @@ export default function ProductModal(props: ProductModalProps) {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         
-        const response = await fetch('https://stock-management-backend-ten.vercel.app/products', {
+        const response = await fetch(`${process.env.PUBLIC_URL_BACKEND_API}/products`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

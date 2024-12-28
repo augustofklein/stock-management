@@ -3,7 +3,7 @@ import Product from "@/model/Product";
 
 interface ProductProps {
     product: Product;
-    handleEdit: () => void;
+    handleEdit: (productId: string, productDescription: string) => void;
     handleDelete: (productId: string) => void;
 }
 
@@ -12,7 +12,7 @@ export default function ProductCard(props: ProductProps) {
         <div className="max-w-sm rounded overflow-hidden shadow-lg mt-4 mr-4">
             <img className="w-full" src="../../../images/no-image.png" alt="Product Image"/>
             <div className="px-6 py-4">
-                <button onClick={props.handleEdit} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                <button onClick={() => props.handleEdit(props.product.id, props.product.description)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
                     Edit
                 </button>
                 <button onClick={() => props.handleDelete(props.product.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">

@@ -19,8 +19,9 @@ export default function Products() {
     };
 
     const fetchProducts = async () => {
+
         try {
-            const response = await fetch('https://stock-management-backend-ten.vercel.app/products');
+            const response = await fetch(`https://store-management-e2eme0hyfxe3buc9.brazilsouth-01.azurewebsites.net/v1/product/all`);
         
             if(!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
@@ -41,13 +42,29 @@ export default function Products() {
         await fetchProducts();
     };
 
-    const handleEdit = () => {
-        // Handle edit functionality, such as opening a modal with the product details
+    const handleEdit = async (productId: string, productDescription: string) => {
+        try {
+            const response = await fetch(`https://stock-management-backend-ten.vercel.app/products/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productDescription }),
+            });
+    
+            if (!response.ok) {
+                console.error('Failed to delete product');
+            } else {
+                handleReloadProducts();
+            }
+        } catch (error) {
+            console.error('An error occurred while deleting the product:', error);
+        }
     };
     
     const handleDelete = async (productId: string) => {
         try {
-            const response = await fetch(`https://stock-management-backend-ten.vercel.app/products/${productId}`, {
+            const response = await fetch(`${process.env.PUBLIC_URL_BACKEND_API}/products/${productId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
