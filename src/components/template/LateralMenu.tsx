@@ -1,7 +1,7 @@
 import { HomeIcon, ProductIcon, Entry, Exit, ExitIcon } from "../icons";
 import Logo from "./Logo";
 import ItemMenu from "./ItemMenu";
-import useAuth from "@/data/hook/useAuth";
+import { useAuth } from "@/data/context/AuthContext";
 
 export default function LateralMenu() {
 

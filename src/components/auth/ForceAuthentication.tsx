@@ -1,8 +1,9 @@
 import Image from 'next/image'
-import loading from '../../../public/images/loading.gif'
-import useAuth from '@/data/hook/useAuth'
-import router from 'next/router'
+import loadingGif from '../../../public/images/loadingGif.gif'
+import router, { useRouter } from 'next/router'
 import Head from 'next/head'
+import { useAuth } from '@/data/context/AuthContext'
+import { useEffect } from 'react'
 
 interface ForceAuthenticationProps {
     children?:any
@@ -10,11 +11,14 @@ interface ForceAuthenticationProps {
 
 export default function ForceAuthentication(props: ForceAuthenticationProps) {
 
-    const { carregando, usuario } = useAuth()
+    const { loading, user } = useAuth()
+    const router = useRouter();
 
-    type RenderizarConteudoProps = {
-        children?: any
-      };
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/authentication");
+        }
+    }, [loading, user, router]);
 
     function renderizeContent() {
         return(
@@ -23,7 +27,7 @@ export default function ForceAuthentication(props: ForceAuthenticationProps) {
                     <script
                         dangerouslySetInnerHTML={{
                             __html: `
-                                if(!document.cookie?.includes("stock-management-auth")) {
+                                if(!document.cookie?.includes("store-management-auth")) {
                                     window.location.href = "/authentication"
                                 }  
                             `
@@ -40,17 +44,16 @@ export default function ForceAuthentication(props: ForceAuthenticationProps) {
             <div className={`
                 flex justify-center items-center h-screen
             `}>
-                <Image src={loading} alt=""/>
+                <Image src={loadingGif} alt=""/>
             </div>
         )
     }
 
-    if(!carregando && usuario?.email) {
+    if(!loading && user) {
         return renderizeContent()
-    } else if (carregando) {
+    } else if (loading) {
         return rendirezeLoading()
     } else {
-        router.push('/authentication')
         return null
     }
 

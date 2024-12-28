@@ -1,71 +1,71 @@
-import firebase from '../../firebase/config'
-import { useState, createContext, useEffect } from 'react'
+import { useState, createContext, useContext } from 'react'
 import route from 'next/router'
 import Cookies from 'js-cookie'
-import Usuario from '@/model/Usuario'
 
 interface AuthContextProps {
-    usuario?: Usuario
-    carregando?: boolean
-    cadastrar?: (email: string, senha: string) => Promise<void>
-    login?: (email: string, senha: string) => Promise<void>
-    loginGoogle?: () => Promise<void>
+    user?: string;
+    loading: boolean
+    login: (username: string, password: string) => Promise<void>
     logout?: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextProps>({})
+const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-async function normalizeUser(usuarioFirebase: firebase.User): Promise<Usuario> {
-    const token = await usuarioFirebase.getIdToken()
-    return {
-        uid: usuarioFirebase.uid,
-        nome: usuarioFirebase.displayName,
-        email: usuarioFirebase.email,
-        token,
-        provedor: usuarioFirebase.providerData[0]?.providerId,
-        imagemUrl: usuarioFirebase.photoURL
-    }
-}
-
-function gerenciarCookie(logado: boolean) {
-    if(logado) {
-        Cookies.set('stock-management-auth', 'true',{
+function gerenciarCookie(token: string) {
+    if(token !== null) {
+        console.log(token);
+        Cookies.set('store-management-auth', token,{
             expires: 7
         })
     } else {
-        Cookies.remove('stock-management-auth')
+        Cookies.remove('store-management-auth')
     }
 }
 
-export function AuthProvider(props: any) {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [carregando, setLoading] = useState(true)
-    const [usuario, setUser] = useState<Usuario>()
+    const [loading, setLoading] = useState(false)
+    const [user, setUsername] = useState<string>();
 
-    async function configSession(usuarioFirebase: any) {
-        if(usuarioFirebase?.email) {
-            const usuario = await normalizeUser(usuarioFirebase)
-            setUser(usuario)
-            gerenciarCookie(true)
-            setLoading(false)
-            return usuario.email
+    async function configSession(token: string) {
+        if(token !== "") {
+            gerenciarCookie(token)
         } else {
-            setUser(undefined)
-            gerenciarCookie(false)
-            setLoading(false)
-            return false
+            gerenciarCookie("")
         }
     }
 
-    async function loginGoogle() {
+    async function login(username: string, password: string) {
         try {
             setLoading(true)
-            const resp = await firebase.auth().signInWithPopup(
-                new firebase.auth.GoogleAuthProvider()
-            )
 
-            await configSession(resp.user)
+            const authData = {
+                Username: username,
+                Password: password
+            }
+
+            const response = await fetch(`https://store-management-e2eme0hyfxe3buc9.brazilsouth-01.azurewebsites.net/v1/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({username, password}),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Login failed:", errorData);
+                throw new Error("Failed to login");
+            }
+
+            const data = await response.json();
+
+            configSession(data.token);
+            setUsername(username);
+
             route.push('/')
+        } catch {
+            // TODO: Adicionar toast de erro
         } finally {
             setLoading(false)
         }
@@ -74,32 +74,29 @@ export function AuthProvider(props: any) {
     async function logout() {
         try {
             setLoading(true)
-            await firebase.auth().signOut()
-            await configSession(null)
+            setUsername("");
+            await configSession("")
         } finally {
             setLoading(false)
         }
     }
 
-    useEffect(() => {
-        if(Cookies.get('stock-management-auth')) {
-            const cancelar = firebase.auth().onIdTokenChanged(configSession)
-            return () => cancelar()
-        } else {
-            setLoading(false)
-        }
-    }, [])
-
     return(
         <AuthContext.Provider value={{
-            usuario,
-            carregando,
-            loginGoogle,
+            user,
+            loading,
+            login,
             logout
         }}>
-            {props.children}
+            {children}
         </AuthContext.Provider>
     )
 }
 
-export default AuthContext
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+    return context;
+};

@@ -3,6 +3,7 @@ import ProductCard from "@/components/template/ProductCard";
 import ProductModal from "@/components/template/ProductModal";
 import Product from "@/model/Product";
 import { useEffect, useState } from "react";
+import Cookies from 'js-cookie'
 
 export default function Products() {
 
@@ -21,7 +22,13 @@ export default function Products() {
     const fetchProducts = async () => {
 
         try {
-            const response = await fetch(`https://store-management-e2eme0hyfxe3buc9.brazilsouth-01.azurewebsites.net/v1/product/all`);
+            const response = await fetch(`https://store-management-e2eme0hyfxe3buc9.brazilsouth-01.azurewebsites.net/v1/product/all`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${Cookies.get('store-management-auth')}`,
+                },
+            });
         
             if(!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
