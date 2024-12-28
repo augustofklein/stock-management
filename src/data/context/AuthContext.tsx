@@ -13,7 +13,6 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 function gerenciarCookie(token: string) {
     if(token !== null) {
-        console.log(token);
         Cookies.set('store-management-auth', token,{
             expires: 7
         })
